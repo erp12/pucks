@@ -3,6 +3,11 @@
 (ns pucks.util
   (:use clojure.repl clojure.pprint quil.core pucks.globals pucks.vec2D))
 
+(defn get-puck-with-id
+  "Returns the puck with the given id."
+  [id]
+  (filter (fn [puck] (= (:id puck) id)) @all-agents))
+
 (defn wrap-rotation 
   "Wraps rotation angle r to -pi <= r <= pi"
   [r]

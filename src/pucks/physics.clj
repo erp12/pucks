@@ -139,6 +139,7 @@ transfer from another agent is required for the transfer to proceed."
   (or (and (coll? (:ask xfer)) (empty? (:ask xfer)))
       (empty? (:bid xfer))))
 
+
 (defn enforce-bonds
   "Takes a sequence of agents for which new velocities have been calculated and
 returns a sequence of the agents with the velocities and adjusted to enforce 
@@ -242,8 +243,14 @@ changes to the world."
                                                     (can-afford other (:bid xfer2))
                                                     ;; an ask can be a funcion of two bids, or it can be a map, 
                                                     ;; in which case it is satisfied if it is = to the other agent's bid
-                                                    (acceptable (:ask xfer1) (:bid xfer1) (:bid xfer2))
-                                                    (acceptable (:ask xfer2) (:bid xfer2) (:bid xfer1)))
+                                                    (or
+                                                      (acceptable (:ask xfer1) (:bid xfer1) (:bid xfer2))
+                                                      (> (:energy (get-puck-with-id (:self xfer1)))
+                                                         (:energy (get-puck-with-id (:other xfer1)))))
+                                                    (or
+                                                      (acceptable (:ask xfer2) (:bid xfer2) (:bid xfer1))
+                                                      (> (:energy (get-puck-with-id (:self xfer2)))
+                                                         (:energy (get-puck-with-id (:other xfer2))))))
                                              ;; if both asks are happy then both bids are processed
                                              ;; there may be system loss, but should not be system gain
                                              (recur (rest remaining)
