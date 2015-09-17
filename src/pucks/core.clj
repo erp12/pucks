@@ -44,7 +44,8 @@ GUI interactions."
     (run-sensors)         ;; augment each agent with sensed objects
     (generate-proposals)  ;; generate proposals from each agent
     (arbitrate-proposals) ;; arbitrate proposals and make changes to world
-    (reap))                ;; eliminate any dead agents
+    (reap)
+    (leave-corpses))      ;; eliminate any dead agents
   (draw-agents)        ;; draw the world to the display
   ;; handle space-key presses to pause/unpause the simulation
   (when (and (key-pressed?)

@@ -106,6 +106,15 @@ If it is not a map then it should be a function of two arguments (bids)."
                         :bound-to (conj (:bound-to result) v)
                         nil)))))))
 
+(defn mark-puck
+  [puck mark-key mark-value should-append]
+  (if should-append
+    (assoc puck mark-key
+           (if (coll? (mark-key puck))
+             (concat (mark-key puck) mark-value)
+             (conj [] (mark-key puck) mark-value)))
+    (assoc puck mark-key mark-value)))
+
 (defn process-transfer-bid-in-agent-map
   "Takes a transfer and a map from ids to agents, and returns the map changed
 to reflect the transfer (meaning that the transfer's bid is paid by the 
@@ -116,6 +125,25 @@ transfer's :self to the transfer's :other)."
     (dissoc other)
     (assoc self (without (self agent-map) bid))
     (assoc other (with (other agent-map) bid))))
+
+(defn process-wound-in-agent-map
+  "Takes a transfer with woundsand a map from ids to agents, and returns the 
+map changed to reflect the transfer."
+  [{:keys [self other wound]} agent-map]
+  (if wound
+    (-> agent-map
+      (dissoc self)
+      (dissoc other)
+      (assoc self (without (self agent-map) {:energy wound}))
+      (assoc other 
+             (assoc
+               (other agent-map)
+               :wound
+               (+ (:wound (other agent-map)) 
+                  wound)))
+      (assoc other
+             (mark-puck (other agent-map) :just-wounded-by self true)))
+    agent-map))
 
 (defn all-pairs 
   "Returns a vector of all possible pairs of items from vector v."
@@ -251,7 +279,10 @@ changes to the world."
                                                       (process-transfer-bid-in-agent-map xfer1)
                                                       (process-transfer-bid-in-agent-map xfer2)))
                                              ;; otherwise
-                                             (recur (rest remaining) agent-map)))))))))]
+                                             (recur (rest remaining) 
+                                                    (->> agent-map
+                                                      (process-wound-in-agent-map xfer1)
+                                                      (process-wound-in-agent-map xfer2)))))))))))]
         ;; The world after all transactions have been conducted is now in post-xfer-agents.
         ;; Now we can process all other proposals for agents taken individually. 
         (enforce-bonds 

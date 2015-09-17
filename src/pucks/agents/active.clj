@@ -38,6 +38,12 @@
       (stroke 255 0 0 196)
       (ellipse 0 0 radius radius)
       (no-stroke))
+    (when (:just-wounded-by p)
+      (fill 255 255 255 255)
+      (stroke-weight 10)
+      (stroke 255 255 255 196)
+      (ellipse 0 0 radius radius)
+      (no-stroke))
     ;; heading, relative to 12 o'clock
     (fill eye-r eye-g eye-b 196)
     (ellipse 0 (* radius -0.75) (* radius 0.5) (* radius 0.5))
@@ -51,6 +57,7 @@
   (merge (generic)
          {:mobile true
           :active true
+          :wound 0
           :color [128 255 0]
           :eye-color [255 255 0]
           :core-color [0 255 0]
