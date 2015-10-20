@@ -7,12 +7,13 @@
                         {:self (:id p)
                          :other (:id other)
                          :bid {:energy 0.0}
-                         :ask {:energy 0.5}}))})
+                         :ask {:energy 0.5}}))
+   :acceleration 0})
 
 (defn victim []
   (merge (linear)
-         {:linear true
-          :proposal-function linear-proposals
+         {:victim true
+          :proposal-function victim-proposals
           :color [0 0 255]}))
 
 

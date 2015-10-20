@@ -4,17 +4,10 @@
 
 (defn barbarianr-proposals [p]
   {:acceleration 1
-   :rotation (relative-position->rotation 
-              (+v (if (empty? (filter (fn [other] (and
-                                                    (:active other)
-                                                    (not (:barbarian other)))) 
-                                      (:sensed p)))
-                    (rotation->relative-position (:rotation p)) 
-                    (apply avgv (map :velocity (filter (fn [other] (and
-                                                                     (:active other)
-                                                                     (not (:barbarian other))))
-                                                       (:sensed p)))))
-                  (rand-direction)))
+   :rotation (let [v (first (filter :victim (:sensed p)))]
+               (if v
+                 (relative-position->rotation (:position v))
+                 (relative-position->rotation (:velocity p))))
    :transfer (into [] (for [victim (filter :mobile (:overlaps p))]
                         {:self (:id p)
                          :other (:id victim)
