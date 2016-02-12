@@ -2,6 +2,10 @@
 
 pucks: An environment for experiments and education in artificial intelligence and artificial life.
 
+## This Fork
+
+This fork is currently working on an aggression system for pucks. Pucks will have to ability to "wound" one another to the point of death, and then "plunder" the corpses to salvage energy and inventory items. Based on biological evolution, it seems like giving pucks the ability to behave in this way could be crucial for successful Artificial Life evolution.
+
 ## Usage
 
 Assuming that you have installed [leiningen](http://leiningen.org), you can run a simulation by typing something with the following pattern at the command line:
